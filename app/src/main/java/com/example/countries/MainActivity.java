@@ -32,7 +32,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         button = findViewById(R.id.button);
         textView = findViewById(R.id.textView);
 
-        // Initialize the countries list
         countries = new ArrayList<>(Arrays.asList(
                 "INDIA", "Israel", "Afghanistan", "France",
                 "Bhutan", "Pakistan", "Japan", "Nepal",
@@ -59,10 +58,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
-        // Set the OnItemSelectedListener for the spinner
+
         spinner.setOnItemSelectedListener(this);
 
-        // Set the OnClickListener for the button
+
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -72,28 +71,28 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void removeSelectedCountry() {
-        // Get the selected item from the spinner
+
         String selectedCountry = spinner.getSelectedItem().toString();
 
-        // Remove the selected item from the list
+
         countries.remove(selectedCountry);
 
-        // Increase the selections count
+
         selectionsCount++;
 
-        // If it's the 10th selection, disable the button and show the result
+
         if (selectionsCount == 10) {
             button.setEnabled(false);
             textView.setText(getString(R.string.no_countries_present));
         }
 
-        // Notify the adapter that the data has changed
+
         ((ArrayAdapter) spinner.getAdapter()).notifyDataSetChanged();
     }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        // Show a toast with the selected country
+
         String selectedCountry = parent.getItemAtPosition(position).toString();
         Toast.makeText(this, "Selected: " + selectedCountry, Toast.LENGTH_SHORT).show();
     }
