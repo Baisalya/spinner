@@ -5,26 +5,32 @@
     android:layout_height="match_parent"
     android:padding="16dp"
     tools:context=".MainActivity">
-
-    <Spinner
-        android:id="@+id/countrySpinner"
+    <LinearLayout
+        android:id="@+id/ll"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <Button
-        android:id="@+id/addButton"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/countrySpinner"
-        android:layout_marginTop="16dp"
-        android:text="+"
-        android:enabled="false" />
+        android:orientation="horizontal"
+        >
 
+
+        <Spinner
+            android:id="@+id/countrySpinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/addButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/countrySpinner"
+            android:text="+"
+            android:enabled="false" />
+    </LinearLayout>
     <LinearLayout
         android:id="@+id/spinnerContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/addButton"
+        android:layout_below="@id/ll"
         android:layout_marginTop="16dp"
         android:orientation="vertical" />
 
