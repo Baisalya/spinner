@@ -1,110 +1,128 @@
 package com.example.countries;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-    private Spinner spinner;
-    private Button button, nextpage;
-    private TextView textView;
+    private Spinner countrySpinner;
+    private Button addButton;
+    private LinearLayout spinnerContainer;
+
     private List<String> countries;
-    private int selectionsCount;
+    private List<String> selectedCountries;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        spinner = findViewById(R.id.spinner);
-        button = findViewById(R.id.button);
-        textView = findViewById(R.id.textView);
-        nextpage=findViewById(R.id.nextpage);
-        nextpage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent=new Intent(MainActivity.this, MainActivity2.class);
-                startActivity(intent);
-                finish();
-            }
-        });
-        // Initialize the countries list
-        countries = new ArrayList<>(Arrays.asList(
-                "INDIA", "Israel", "Afghanistan", "France",
-                "Bhutan", "Pakistan", "Japan", "Nepal",
-                "China", "UAE"
-        ));
+        // Initialize lists
+        countries = new ArrayList<>();
+        selectedCountries = new ArrayList<>();
 
-        // Create a custom adapter for the spinner
-        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, countries) {
-            @Override
-            public int getCount() {
-                int count = super.getCount();
-                return selectionsCount >= 10 && count == 0 ? 1 : count;
-            }
+        // Add country names
+        countries.add("Country 1");
+        countries.add("Country 2");
+        countries.add("Country 3");
+        countries.add("Country 4");
+        countries.add("Country 5");
+        countries.add("Country 6");
+        countries.add("Country 7");
+        countries.add("Country 8");
+        countries.add("Country 9");
+        countries.add("Country 10");
 
-            @Override
-            public String getItem(int position) {
-                if (selectionsCount >= 10 && getCount() == 1) {
-                    return "No country available";
-                }
-                return super.getItem(position);
-            }
-        };
+        // Initialize views
+        countrySpinner = findViewById(R.id.countrySpinner);
+        addButton = findViewById(R.id.addButton);
+        spinnerContainer = findViewById(R.id.spinnerContainer);
 
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
+        // Set up adapter for country spinner
+        ArrayAdapter<String> countryAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, countries);
+        countryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        countrySpinner.setAdapter(countryAdapter);
+        countrySpinner.setOnItemSelectedListener(this);
 
-        // Set the OnItemSelectedListener for the spinner
-        spinner.setOnItemSelectedListener(this);
-
-        // Set the OnClickListener for the button
-        button.setOnClickListener(new View.OnClickListener() {
+        // Set up button click listener
+        addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                removeSelectedCountry();
+                String selectedCountry = countrySpinner.getSelectedItem().toString();
+                selectedCountries.add(selectedCountry);
+                countries.remove(selectedCountry);
+
+                // Create new LinearLayout for the row
+                LinearLayout rowLayout = new LinearLayout(MainActivity.this);
+                rowLayout.setOrientation(LinearLayout.HORIZONTAL);
+
+                // Create new spinner for selected country
+                final Spinner selectedCountrySpinner = new Spinner(MainActivity.this);
+                ArrayAdapter<String> selectedCountryAdapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_spinner_item, selectedCountries);
+                selectedCountryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                selectedCountrySpinner.setAdapter(selectedCountryAdapter);
+
+                // Set the selection of the new spinner
+                int selectionIndex = selectedCountries.indexOf(selectedCountry);
+                selectedCountrySpinner.setSelection(selectionIndex);
+
+                // Add the new spinner to the row layout
+                LinearLayout.LayoutParams spinnerParams = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1);
+                rowLayout.addView(selectedCountrySpinner, spinnerParams);
+
+                // Create remove button for the spinner
+                Button removeButton = new Button(MainActivity.this);
+                removeButton.setText("-");
+                removeButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String removedCountry = selectedCountrySpinner.getSelectedItem().toString();
+                        selectedCountries.remove(removedCountry);
+                        countries.add(removedCountry);
+
+                        // Update first spinner adapter
+                        ArrayAdapter<String> countryAdapter = (ArrayAdapter<String>) countrySpinner.getAdapter();
+                        countryAdapter.notifyDataSetChanged();
+
+                        // Remove the row layout
+                        spinnerContainer.removeView(rowLayout);
+                    }
+                });
+
+                // Add the remove button to the row layout
+                LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                rowLayout.addView(removeButton, buttonParams);
+
+                // Add the row layout to the container
+                spinnerContainer.addView(rowLayout);
+
+                // Clear selection
+                countrySpinner.setSelection(0);
+
+                if (countries.isEmpty()) {
+                    addButton.setEnabled(false);
+                    Toast.makeText(MainActivity.this, "No countries available", Toast.LENGTH_SHORT).show();
+                }
             }
         });
-    }
 
-    private void removeSelectedCountry() {
-        // Get the selected item from the spinner
-        String selectedCountry = spinner.getSelectedItem().toString();
 
-        // Remove the selected item from the list
-        countries.remove(selectedCountry);
-
-        // Increase the selections count
-        selectionsCount++;
-
-        // If it's the 10th selection, disable the button and show the result
-        if (selectionsCount == 10) {
-            button.setEnabled(false);
-            textView.setText(getString(R.string.no_countries_present));
-        }
-
-        // Notify the adapter that the data has changed
-        ((ArrayAdapter) spinner.getAdapter()).notifyDataSetChanged();
     }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        // Show a toast with the selected country
-        String selectedCountry = parent.getItemAtPosition(position).toString();
-        Toast.makeText(this, "Selected: " + selectedCountry, Toast.LENGTH_SHORT).show();
+        addButton.setEnabled(!countries.isEmpty());
     }
 
     @Override

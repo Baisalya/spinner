@@ -16,10 +16,11 @@ import java.util.List;
 public class MainActivity2 extends AppCompatActivity {
 
     private Spinner countriesSpinner;
-    private Button submitButton,nextpage;
+    private Button submitButton;
     private List<String> selectedCountries;
     private int count = 0;
     private List<String> countries;
+    private ArrayAdapter<String> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +46,7 @@ public class MainActivity2 extends AppCompatActivity {
         countries.add("Country 10");
 
         // Create an ArrayAdapter using the countries list and a default spinner layout
-        final ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+        adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item, countries);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
@@ -76,13 +77,12 @@ public class MainActivity2 extends AppCompatActivity {
 
         Spinner newSpinner = new Spinner(this);
         newSpinner.setLayoutParams(countriesSpinner.getLayoutParams());
-        newSpinner.setAdapter(new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item, countries));
+        newSpinner.setAdapter(adapter);
         newSpinner.setSelection(0);
 
         ((LinearLayout) findViewById(R.id.spinnerLayout)).addView(newSpinner);
 
         // Set the newly created spinner as the current spinner
         countriesSpinner = newSpinner;
-}
+    }
 }
