@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         // Create new spinner for selected country
         final Spinner selectedCountrySpinner = new Spinner(MainActivity.this);
-        ArrayAdapter<String> selectedCountryAdapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_spinner_item, selectedCountries);
+        ArrayAdapter<String> selectedCountryAdapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_spinner_item, countries);
         selectedCountryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         selectedCountrySpinner.setAdapter(selectedCountryAdapter);
 
