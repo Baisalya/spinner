@@ -1,5 +1,6 @@
 package com.example.countries;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -18,7 +19,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private Spinner spinner;
-    private Button button;
+    private Button button, nextpage;
     private TextView textView;
     private List<String> countries;
     private int selectionsCount;
@@ -31,7 +32,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         spinner = findViewById(R.id.spinner);
         button = findViewById(R.id.button);
         textView = findViewById(R.id.textView);
-
+        nextpage=findViewById(R.id.nextpage);
+        nextpage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(MainActivity.this, MainActivity2.class);
+                startActivity(intent);
+                finish();
+            }
+        });
         // Initialize the countries list
         countries = new ArrayList<>(Arrays.asList(
                 "INDIA", "Israel", "Afghanistan", "France",
